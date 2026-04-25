@@ -19,7 +19,7 @@ import {
 const navItems = [
   { en: "Dashboard", hi: "डैशबोर्ड", url: "/", icon: Home },
   { en: "Text/Speech → ISL", hi: "टेक्स्ट/स्पीच → ISL", url: "/text-to-isl", icon: Languages },
-  { en: "ISL → Text/Speech", hi: "ISL → टेक्स्ट/स्पीच", url: "/isl-to-text", icon: Hand },
+  { en: "isl-text/speech", hi: "ISL → टेक्स्ट/स्पीच", url: "/isl-to-text", icon: Hand },
   { en: "Tutors", hi: "ट्यूटर", url: "/tutors", icon: GraduationCap },
   { en: "Word History", hi: "शब्द इतिहास", url: "/history", icon: History },
   { en: "Places", hi: "स्थान", url: "/places", icon: MapPin },

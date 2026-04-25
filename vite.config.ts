@@ -15,6 +15,30 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+    optimizeDeps: {
+      include: [
+        "react", 
+        "react-dom", 
+        "axios", 
+        "lucide-react", 
+        "react-router-dom", 
+        "@tanstack/react-query",
+        "sonner"
+      ],
+    },
+    build: {
+      target: 'esnext',
+      minify: 'esbuild',
+      cssMinify: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor': ['react', 'react-dom', 'react-router-dom'],
+            'ui-icons': ['lucide-react'],
+          }
+        }
+      }
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
