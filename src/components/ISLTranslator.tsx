@@ -181,15 +181,16 @@ export default function ISLTranslator() {
   }, [isListening]);
 
   const translateHindiToEnglish = async (hindiText: string): Promise<string> => {
-    const TRANSLATE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/translate-hindi`;
-    const resp = await fetch(TRANSLATE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
-      body: JSON.stringify({ text: hindiText }),
-    });
-    if (!resp.ok) throw new Error("Translation failed");
-    const data = await resp.json();
-    return data.translation || hindiText;
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=hi&tl=en&dt=t&q=${encodeURIComponent(hindiText)}`;
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error("Translation failed");
+      const data = await resp.json();
+      return data[0][0][0] || hindiText;
+    } catch (error) {
+      console.error("Translation API error:", error);
+      return hindiText;
+    }
   };
 
   const handleConvert = async () => {
