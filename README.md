@@ -2,9 +2,7 @@
 
 **Beyond** is a high-performance, real-time sign language translation and tutoring platform. It bridges the communication gap between the deaf and hearing communities using cutting-edge AI, computer vision, and a comprehensive database of Indian Sign Language (ISL) gestures.
 
-![ISL Bridge Hero](https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=1200)
-
-## 🚀 Key Features
+##  Key Features
 
 ### 1. ISL Translator (Text-to-Sign)
 - **Multilingual Input**: Type or speak sentences in **English** or **Hindi**.
@@ -28,7 +26,7 @@
 
 ---
 
-## 🛠️ Technical Stack
+##  Technical Stack
 
 - **Frontend**: Vite + React, TailwindCSS, Lucide Icons, Framer Motion.
 - **Backend**: FastAPI (Python), TensorFlow (CNN), Scikit-Learn (ExtraTrees), MediaPipe (Hand Landmarking).
@@ -37,7 +35,7 @@
 
 ---
 
-## 🏁 Getting Started
+##  Getting Started
 
 ### 1. Prerequisites
 - **Python 3.9+**
@@ -65,7 +63,7 @@ bun dev
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```text
 isl-bridge/
@@ -84,8 +82,7 @@ isl-bridge/
 
 ---
 
-## ⚖️ License
+##  License
 This project is open-source and dedicated to improving communication accessibility for the deaf community.
 
----
-*Developed with ❤️ by the ISL Bridge Team.*
+
