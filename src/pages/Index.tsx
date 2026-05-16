@@ -149,7 +149,7 @@ export default function Index() {
             {showVideo && (
               <div className="rounded-2xl overflow-hidden aspect-video bg-black/10 shadow-inner ring-1 ring-border/30">
                 <iframe
-                  src={`https://www.youtube.com/embed/${wotd.video_id}?start=${wotd.start_time}&end=${wotd.end_time}&autoplay=1`}
+                  src={`https://www.youtube.com/embed/${wotd.video_id}?start=${wotd.start_time}&end=${wotd.end_time}&autoplay=1&mute=1`}
                   className="w-full h-full"
                   allow="autoplay; encrypted-media"
                   allowFullScreen

@@ -61,7 +61,8 @@ export default function ISLChatbot() {
       setIsLoading(true);
       let assistantSoFar = "";
       try {
-        const CHAT_URL = `http://localhost:5000/isl-chat`;
+        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const CHAT_URL = `${API_BASE}/isl-chat`;
         const resp = await fetch(CHAT_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

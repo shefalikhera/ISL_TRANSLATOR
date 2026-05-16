@@ -1,14 +1,31 @@
+from contextlib import asynccontextmanager
+import asyncio
+import os
+import socket
+import sys
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import os
-import sys
-import traceback
 from gtts import gTTS
 import tempfile
 from fastapi.responses import FileResponse
 
-app = FastAPI()
+from recognition import init_recognition, register_recognition_routes, shutdown_recognition
+from recognition.lifecycle import is_recognition_initialized
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Heavy TensorFlow/joblib work must not block the event loop during startup.
+    if not is_recognition_initialized():
+        await asyncio.to_thread(init_recognition)
+    print("SERVER: Application startup complete", flush=True)
+    yield
+    await asyncio.to_thread(shutdown_recognition)
+
+
+app = FastAPI(lifespan=lifespan)
 
 # Allow CORS
 app.add_middleware(
@@ -19,7 +36,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from g4f.client import Client
+register_recognition_routes(app)
+
 
 @app.post("/isl-chat")
 async def isl_chat(request: dict):
@@ -73,6 +91,8 @@ IMPORTANT: Do NOT use markdown formatting in your responses. Reply in plain text
     
     try:
         import g4f
+        from g4f.client import Client
+
         client = Client()
         response = client.chat.completions.create(
             model="openai",
@@ -153,6 +173,49 @@ async def tts(request: TTSRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-if __name__ == "__main__":
+def _port_in_use(host: str, port: int) -> bool:
+    """Return True if something is already listening on this port."""
+    check_host = "127.0.0.1" if host in ("0.0.0.0", "::") else host
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            sock.bind((check_host, port))
+            return False
+        except OSError:
+            return True
+
+
+def run_server() -> None:
+    """Load recognition models, then start Uvicorn (use: python main.py)."""
+    host = os.getenv("SERVER_HOST", "0.0.0.0")
+    port = int(os.getenv("SERVER_PORT", "5000"))
+    log_level = os.getenv("UVICORN_LOG_LEVEL", "info")
+
+    print("SERVER: Loading recognition models...", flush=True)
+    init_recognition()
+
+    if _port_in_use(host, port):
+        print(
+            f"SERVER ERROR: Port {port} is already in use. "
+            f"Stop the other process or set SERVER_PORT to a free port.",
+            flush=True,
+        )
+        sys.exit(1)
+
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+
+    display_host = "127.0.0.1" if host == "0.0.0.0" else host
+    print(f"SERVER: Starting Uvicorn on http://{display_host}:{port}", flush=True)
+
+    # Pass app object so `python main.py` serves this module's FastAPI instance.
+    uvicorn.run(
+        app,
+        host=host,
+        port=port,
+        log_level=log_level,
+        access_log=True,
+    )
+
+
+if __name__ == "__main__":
+    run_server()

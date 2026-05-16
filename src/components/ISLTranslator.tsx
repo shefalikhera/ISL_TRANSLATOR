@@ -76,7 +76,7 @@ export default function ISLTranslator() {
     if (!apiReady || !containerRef.current || playerRef.current) return;
     playerRef.current = new (window as any).YT.Player("yt-player", {
       width: "100%", height: "100%",
-      playerVars: { controls: 0, disablekb: 1, modestbranding: 1, rel: 0, showinfo: 0, fs: 0, iv_load_policy: 3, playsinline: 1 },
+      playerVars: { controls: 0, disablekb: 1, modestbranding: 1, rel: 0, showinfo: 0, fs: 0, iv_load_policy: 3, playsinline: 1, mute: 1 },
       events: {
         onStateChange: (event: any) => {
           const yt = (window as any).YT;
